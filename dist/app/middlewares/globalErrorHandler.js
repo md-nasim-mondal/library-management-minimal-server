@@ -1,6 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const mongoose_1 = require("mongoose");
+const zod_1 = require("zod");
 const globalErrorHandler = (err, req, res, next) => {
     let statusCode = err.statusCode || 500;
     let message = err.message || 'Something went wrong!';
@@ -8,8 +9,21 @@ const globalErrorHandler = (err, req, res, next) => {
         message: err.message,
         name: err.name,
     };
+    // Handle Zod Validation Error
+    if (err instanceof zod_1.ZodError) {
+        statusCode = 400;
+        message = 'Validation failed';
+        errorResponse = {
+            name: 'ZodValidationError',
+            errors: err.issues.map((error) => ({
+                path: error.path.join('.'),
+                message: error.message,
+                code: error.code,
+            })),
+        };
+    }
     // Handle Mongoose Validation Error
-    if (err instanceof mongoose_1.Error.ValidationError) {
+    else if (err instanceof mongoose_1.Error.ValidationError) {
         statusCode = 400;
         message = 'Validation failed';
         errorResponse = {
@@ -30,7 +44,7 @@ const globalErrorHandler = (err, req, res, next) => {
         });
     }
     // Handle Mongoose Cast Error (Invalid ObjectId)
-    if (err.name === 'CastError') {
+    else if (err.name === 'CastError') {
         statusCode = 400;
         message = 'Invalid ID format';
         errorResponse = {
@@ -39,7 +53,7 @@ const globalErrorHandler = (err, req, res, next) => {
         };
     }
     // Handle Mongoose Duplicate Key Error
-    if (err.code === 11000) {
+    else if (err.code === 11000) {
         statusCode = 400;
         message = 'Duplicate field value';
         const field = Object.keys(err.keyValue)[0];

@@ -1,5 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
 import { Error as MongooseError } from 'mongoose';
+import { ZodError } from 'zod';
 
 interface CustomError extends Error {
   statusCode?: number;
@@ -20,8 +21,22 @@ const globalErrorHandler = (
     name: err.name,
   };
 
+  // Handle Zod Validation Error
+  if (err instanceof ZodError) {
+    statusCode = 400;
+    message = 'Validation failed';
+    errorResponse = {
+      name: 'ZodValidationError',
+      errors: err.issues.map((error) => ({
+        path: error.path.join('.'),
+        message: error.message,
+        code: error.code,
+      })),
+    };
+  }
+
   // Handle Mongoose Validation Error
-  if (err instanceof MongooseError.ValidationError) {
+  else if (err instanceof MongooseError.ValidationError) {
     statusCode = 400;
     message = 'Validation failed';
     errorResponse = {
@@ -48,7 +63,7 @@ const globalErrorHandler = (
   }
 
   // Handle Mongoose Cast Error (Invalid ObjectId)
-  if (err.name === 'CastError') {
+  else if (err.name === 'CastError') {
     statusCode = 400;
     message = 'Invalid ID format';
     errorResponse = {
@@ -58,7 +73,7 @@ const globalErrorHandler = (
   }
 
   // Handle Mongoose Duplicate Key Error
-  if ((err as any).code === 11000) {
+  else if ((err as any).code === 11000) {
     statusCode = 400;
     message = 'Duplicate field value';
     const field = Object.keys((err as any).keyValue)[0];
