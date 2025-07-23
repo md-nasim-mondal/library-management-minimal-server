@@ -233,10 +233,6 @@ DATABASE_URL=your_mongodb_atlas_connection_string
 4. Push to the branch (`git push origin feature/amazing-feature`)
 5. Open a Pull Request
 
-## 📝 License
-
-This project is licensed under the ISC License.
-
 ## 👨‍💻 Author
 
 **Md. Nasim Mondal**

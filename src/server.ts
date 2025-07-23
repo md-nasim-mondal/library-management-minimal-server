@@ -2,7 +2,7 @@ import mongoose from "mongoose";
 import app from "./app";
 import config from "./app/config";
 
-async function main() {
+async function startServer() {
   try {
     await mongoose.connect(config.database_url as string, {
         dbName: 'library-management',
@@ -17,4 +17,4 @@ async function main() {
   }
 }
 
-main();
+startServer();
