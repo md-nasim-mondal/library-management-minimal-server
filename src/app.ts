@@ -1,7 +1,6 @@
 import express, { Application, Request, Response } from "express";
 import cors from "cors";
-// import { bookRoutes } from './app/routes/book.routes';
-// import { borrowRoutes } from './app/routes/borrow.routes';
+import router from "./app/routes";
 
 const app: Application = express();
 
@@ -9,9 +8,7 @@ const app: Application = express();
 app.use(express.json());
 app.use(cors());
 
-// Routes
-// app.use('/api/books', bookRoutes);
-// app.use('/api/borrow', borrowRoutes);
+app.use("/api", router);
 
 // Default route
 app.get("/", (req: Request, res: Response) => {
