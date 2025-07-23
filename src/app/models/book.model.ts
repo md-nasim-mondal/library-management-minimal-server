@@ -1,0 +1,63 @@
+import { Schema, model } from 'mongoose';
+import { Genre, IBook } from '../interfaces/book.interface';
+
+const bookSchema = new Schema<IBook>(
+  {
+    title: {
+      type: String,
+      required: [true, 'Title is required'],
+    },
+    author: {
+      type: String,
+      required: [true, 'Author is required'],
+    },
+    genre: {
+      type: String,
+      enum: {
+        values: Object.values(Genre),
+        message: '{VALUE} is not a valid genre',
+      },
+      required: [true, 'Genre is required'],
+    },
+    isbn: {
+      type: String,
+      required: [true, 'ISBN is required'],
+      unique: true,
+    },
+    description: {
+      type: String,
+    },
+    copies: {
+      type: Number,
+      required: [true, 'Number of copies is required'],
+      min: [0, 'Copies must be a positive number'],
+    },
+    available: {
+      type: Boolean,
+      default: true,
+    },
+  },
+  {
+    timestamps: true,
+  },
+);
+
+// Static method to check if a book has enough copies
+bookSchema.statics.hasEnoughCopies = async function (bookId: string, quantity: number) {
+  const book = await this.findById(bookId);
+  return book && book.copies >= quantity;
+};
+
+// Instance method to update availability based on copies
+bookSchema.methods.updateAvailability = function () {
+  this.available = this.copies > 0;
+  return this.save();
+};
+
+// Middleware: Pre-save hook to set availability based on copies
+bookSchema.pre('save', function (next) {
+  this.available = this.copies > 0;
+  next();
+});
+
+export const Book = model<IBook>('Book', bookSchema);
