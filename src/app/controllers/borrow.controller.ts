@@ -1,8 +1,8 @@
-import { Request, Response } from 'express';
+import { Request, Response, NextFunction } from 'express';
 import { BorrowService } from '../services/borrow.service';
 
 // Borrow a book
-const borrowBook = async (req: Request, res: Response) => {
+const borrowBook = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const result = await BorrowService.borrowBook(req.body);
     
@@ -11,17 +11,13 @@ const borrowBook = async (req: Request, res: Response) => {
       message: 'Book borrowed successfully',
       data: result,
     });
-  } catch (error: any) {
-    res.status(400).json({
-      message: 'Failed to borrow book',
-      success: false,
-      error: error.message || error,
-    });
+  } catch (error) {
+    next(error);
   }
 };
 
 // Get borrowed books summary
-const getBorrowedBooksSummary = async (req: Request, res: Response) => {
+const getBorrowedBooksSummary = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const result = await BorrowService.getBorrowedBooksSummary();
     
@@ -30,12 +26,8 @@ const getBorrowedBooksSummary = async (req: Request, res: Response) => {
       message: 'Borrowed books summary retrieved successfully',
       data: result,
     });
-  } catch (error: any) {
-    res.status(400).json({
-      message: 'Failed to retrieve borrowed books summary',
-      success: false,
-      error: error.message || error,
-    });
+  } catch (error) {
+    next(error);
   }
 };
 

@@ -10,7 +10,7 @@ const routes = [
     route: bookRoutes,
   },
   {
-    path: "/borrows",
+    path: "/borrow",
     route: borrowRoutes,
   },
 ];

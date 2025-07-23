@@ -1,8 +1,8 @@
-import { Request, Response } from 'express';
+import { Request, Response, NextFunction } from 'express';
 import { BookService } from '../services/book.service';
 
 // Create a new book
-const createBook = async (req: Request, res: Response) => {
+const createBook = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const result = await BookService.createBook(req.body);
     
@@ -11,17 +11,13 @@ const createBook = async (req: Request, res: Response) => {
       message: 'Book created successfully',
       data: result,
     });
-  } catch (error: any) {
-    res.status(400).json({
-      message: 'Failed to create book',
-      success: false,
-      error: error.message || error,
-    });
+  } catch (error) {
+    next(error);
   }
 };
 
 // Get all books
-const getAllBooks = async (req: Request, res: Response) => {
+const getAllBooks = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { filter, sortBy, sort, limit } = req.query;
     
@@ -37,17 +33,13 @@ const getAllBooks = async (req: Request, res: Response) => {
       message: 'Books retrieved successfully',
       data: result,
     });
-  } catch (error: any) {
-    res.status(400).json({
-      message: 'Failed to retrieve books',
-      success: false,
-      error: error.message || error,
-    });
+  } catch (error) {
+    next(error);
   }
 };
 
 // Get a book by ID
-const getBookById = async (req: Request, res: Response) => {
+const getBookById = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { bookId } = req.params;
     const result = await BookService.getBookById(bookId);
@@ -68,17 +60,13 @@ const getBookById = async (req: Request, res: Response) => {
       message: 'Book retrieved successfully',
       data: result,
     });
-  } catch (error: any) {
-    res.status(400).json({
-      message: 'Failed to retrieve book',
-      success: false,
-      error: error.message || error,
-    });
+  } catch (error) {
+    next(error);
   }
 };
 
 // Update a book
-const updateBook = async (req: Request, res: Response) => {
+const updateBook = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { bookId } = req.params;
     const result = await BookService.updateBook(bookId, req.body);
@@ -99,17 +87,13 @@ const updateBook = async (req: Request, res: Response) => {
       message: 'Book updated successfully',
       data: result,
     });
-  } catch (error: any) {
-    res.status(400).json({
-      message: 'Failed to update book',
-      success: false,
-      error: error.message || error,
-    });
+  } catch (error) {
+    next(error);
   }
 };
 
 // Delete a book
-const deleteBook = async (req: Request, res: Response) => {
+const deleteBook = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { bookId } = req.params;
     const result = await BookService.deleteBook(bookId);
@@ -130,12 +114,8 @@ const deleteBook = async (req: Request, res: Response) => {
       message: 'Book deleted successfully',
       data: null,
     });
-  } catch (error: any) {
-    res.status(400).json({
-      message: 'Failed to delete book',
-      success: false,
-      error: error.message || error,
-    });
+  } catch (error) {
+    next(error);
   }
 };
 
