@@ -67,10 +67,12 @@ const getBorrowedBooksSummary = async () => {
     },
     {
       $project: {
-        _id: 1,
+        _id: 0,
+        book: {
+          title: '$bookDetails.title',
+          isbn: '$bookDetails.isbn',
+        },
         totalQuantity: 1,
-        'bookDetails.title': 1,
-        'bookDetails.isbn': 1,
       },
     },
   ]);
