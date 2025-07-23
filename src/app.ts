@@ -9,7 +9,6 @@ const app: Application = express();
 app.use(express.json());
 app.use(cors());
 
-app.use("/api", router);
 
 // Default route
 app.get("/", (req: Request, res: Response) => {
@@ -18,6 +17,7 @@ app.get("/", (req: Request, res: Response) => {
     message: "Welcome to Library Management API",
   });
 });
+app.use("/api", router);
 
 // Not found route
 app.use( (req: Request, res: Response) => {
