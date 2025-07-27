@@ -12,9 +12,8 @@ export const createBookValidationSchema = z.object({
       message: 'Author is required',
     }).min(1, 'Author cannot be empty').trim(),
     
-    genre: z.nativeEnum(Genre, {
-      message: 'Genre is required',
-      error: 'Invalid genre provided',
+    genre: z.enum(Object.values(Genre) as [string, ...string[]], {
+      message: 'Invalid genre provided',
     }),
     
     isbn: z.string({
@@ -24,8 +23,7 @@ export const createBookValidationSchema = z.object({
     description: z.string().trim().optional(),
     
     copies: z.number({
-      message: 'Number of copies is required',
-      error: 'Copies must be a number',
+      message: 'Copies must be a number',
     }).int('Copies must be an integer').min(0, 'Copies must be a non-negative number'),
     
     available: z.boolean().optional(),
@@ -37,7 +35,7 @@ export const updateBookValidationSchema = z.object({
   body: z.object({
     title: z.string().min(1, 'Title cannot be empty').trim().optional(),
     author: z.string().min(1, 'Author cannot be empty').trim().optional(),
-    genre: z.nativeEnum(Genre).optional(),
+    genre: z.enum(Object.values(Genre) as [string, ...string[]]).optional(),
     isbn: z.string().min(1, 'ISBN cannot be empty').trim().optional(),
     description: z.string().trim().optional(),
     copies: z.number().int('Copies must be an integer').min(0, 'Copies must be a non-negative number').optional(),
