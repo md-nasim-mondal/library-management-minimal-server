@@ -12,17 +12,15 @@ exports.createBookValidationSchema = zod_1.z.object({
         author: zod_1.z.string({
             message: 'Author is required',
         }).min(1, 'Author cannot be empty').trim(),
-        genre: zod_1.z.nativeEnum(book_interface_1.Genre, {
-            message: 'Genre is required',
-            error: 'Invalid genre provided',
+        genre: zod_1.z.enum(Object.values(book_interface_1.Genre), {
+            message: 'Invalid genre provided',
         }),
         isbn: zod_1.z.string({
             message: 'ISBN is required',
         }).min(1, 'ISBN cannot be empty').trim(),
         description: zod_1.z.string().trim().optional(),
         copies: zod_1.z.number({
-            message: 'Number of copies is required',
-            error: 'Copies must be a number',
+            message: 'Copies must be a number',
         }).int('Copies must be an integer').min(0, 'Copies must be a non-negative number'),
         available: zod_1.z.boolean().optional(),
     }),
@@ -32,7 +30,7 @@ exports.updateBookValidationSchema = zod_1.z.object({
     body: zod_1.z.object({
         title: zod_1.z.string().min(1, 'Title cannot be empty').trim().optional(),
         author: zod_1.z.string().min(1, 'Author cannot be empty').trim().optional(),
-        genre: zod_1.z.nativeEnum(book_interface_1.Genre).optional(),
+        genre: zod_1.z.enum(Object.values(book_interface_1.Genre)).optional(),
         isbn: zod_1.z.string().min(1, 'ISBN cannot be empty').trim().optional(),
         description: zod_1.z.string().trim().optional(),
         copies: zod_1.z.number().int('Copies must be an integer').min(0, 'Copies must be a non-negative number').optional(),
