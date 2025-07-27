@@ -9,7 +9,6 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const zod_1 = require("zod");
 const validateRequest = (schema) => {
     return (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
         try {
@@ -21,20 +20,7 @@ const validateRequest = (schema) => {
             next();
         }
         catch (error) {
-            if (error instanceof zod_1.ZodError) {
-                const errorMessages = error.issues.map((err) => ({
-                    path: err.path.join('.'),
-                    message: err.message,
-                }));
-                return res.status(400).json({
-                    success: false,
-                    message: 'Validation failed',
-                    error: {
-                        name: 'ZodValidationError',
-                        errors: errorMessages,
-                    },
-                });
-            }
+            // Pass the error to global error handler instead of handling here
             next(error);
         }
     });
