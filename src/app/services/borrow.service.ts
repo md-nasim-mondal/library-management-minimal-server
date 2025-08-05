@@ -69,6 +69,7 @@ const getBorrowedBooksSummary = async () => {
       $project: {
         _id: 0,
         book: {
+          bookId: '$bookDetails._id',
           title: '$bookDetails.title',
           isbn: '$bookDetails.isbn',
         },

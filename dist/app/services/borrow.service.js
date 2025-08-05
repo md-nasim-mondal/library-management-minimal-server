@@ -70,6 +70,7 @@ const getBorrowedBooksSummary = () => __awaiter(void 0, void 0, void 0, function
             $project: {
                 _id: 0,
                 book: {
+                    bookId: '$bookDetails._id',
                     title: '$bookDetails.title',
                     isbn: '$bookDetails.isbn',
                 },
