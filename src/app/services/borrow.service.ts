@@ -1,7 +1,9 @@
-import { IBorrow, type IBorrowSummaryResult } from "../interfaces/borrow.interface";
+import {
+  IBorrow,
+  type IBorrowSummaryResult,
+} from "../interfaces/borrow.interface";
 import { Book } from "../models/book.model";
 import { Borrow } from "../models/borrow.model";
-
 
 // Borrow a book
 const borrowBook = async (borrowData: IBorrow) => {

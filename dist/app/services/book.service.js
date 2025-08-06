@@ -51,7 +51,7 @@ const updateBook = (id, payload) => __awaiter(void 0, void 0, void 0, function* 
 });
 // Delete a book
 const deleteBook = (id) => __awaiter(void 0, void 0, void 0, function* () {
-    const result = yield book_model_1.Book.findByIdAndDelete(id);
+    const result = yield book_model_1.Book.findOneAndDelete({ _id: new Object(id) });
     return result;
 });
 exports.BookService = {

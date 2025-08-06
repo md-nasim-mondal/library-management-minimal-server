@@ -56,7 +56,7 @@ const updateBook = async (id: string, payload: Partial<IBook>) => {
 
 // Delete a book
 const deleteBook = async (id: string) => {
-  const result = await Book.findByIdAndDelete(id);
+  const result = await Book.findOneAndDelete({_id:new Object(id) });
   return result;
 };
 

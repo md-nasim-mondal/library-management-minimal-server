@@ -1,5 +1,6 @@
 import { Schema, model } from "mongoose";
 import { Genre, IBook } from "../interfaces/book.interface";
+import { Borrow } from "./borrow.model";
 
 const bookSchema = new Schema<IBook>(
   {
@@ -78,6 +79,14 @@ bookSchema.methods.updateAvailability = function () {
 bookSchema.pre("save", function (next) {
   this.available = this.copies > 0;
   next();
+});
+
+// Query Middleware: Post delete hok to remove data from borrow data 
+bookSchema.post("findOneAndDelete", async function (doc, next) {
+  if (doc) {
+    await Borrow.deleteMany({ book: doc._id });
+    next();
+  }
 });
 
 export const Book = model<IBook>("Book", bookSchema);

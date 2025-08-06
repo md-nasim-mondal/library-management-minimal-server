@@ -12,6 +12,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.Book = void 0;
 const mongoose_1 = require("mongoose");
 const book_interface_1 = require("../interfaces/book.interface");
+const borrow_model_1 = require("./borrow.model");
 const bookSchema = new mongoose_1.Schema({
     title: {
         type: String,
@@ -82,5 +83,14 @@ bookSchema.methods.updateAvailability = function () {
 bookSchema.pre("save", function (next) {
     this.available = this.copies > 0;
     next();
+});
+// Query Middleware: Post delete hok to remove data from borrow data 
+bookSchema.post("findOneAndDelete", function (doc, next) {
+    return __awaiter(this, void 0, void 0, function* () {
+        if (doc) {
+            yield borrow_model_1.Borrow.deleteMany({ book: doc._id });
+            next();
+        }
+    });
 });
 exports.Book = (0, mongoose_1.model)("Book", bookSchema);
