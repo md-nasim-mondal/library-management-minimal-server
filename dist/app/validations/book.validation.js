@@ -36,13 +36,7 @@ exports.createBookValidationSchema = zod_1.z.object({
             .min(0, "Copies must be a non-negative number"),
         available: zod_1.z.boolean().optional(),
         image: zod_1.z.string().optional(),
-        publishedYear: zod_1.z
-            .number({
-            message: "Copies must be a number",
-        })
-            .int("Copies must be an integer")
-            .min(0, "Copies must be a non-negative number")
-            .optional(),
+        publishedYear: zod_1.z.number().optional(),
     }),
 });
 // Update book validation schema (all fields optional)
@@ -60,13 +54,7 @@ exports.updateBookValidationSchema = zod_1.z.object({
             .optional(),
         available: zod_1.z.boolean().optional(),
         image: zod_1.z.string().optional(),
-        publishedYear: zod_1.z
-            .number({
-            message: "Copies must be a number",
-        })
-            .int("Copies must be an integer")
-            .min(0, "Copies must be a non-negative number")
-            .optional(),
+        publishedYear: zod_1.z.number().optional(),
     }),
 });
 // Book ID param validation

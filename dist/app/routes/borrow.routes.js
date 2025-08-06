@@ -10,6 +10,6 @@ const validateRequest_1 = __importDefault(require("../middlewares/validateReques
 const borrow_validation_1 = require("../validations/borrow.validation");
 const router = express_1.default.Router();
 // Borrow routes with validation
-router.post('/', (0, validateRequest_1.default)(borrow_validation_1.createBorrowValidationSchema), borrow_controller_1.BorrowController.borrowBook);
-router.get('/', borrow_controller_1.BorrowController.getBorrowedBooksSummary);
+router.post("/", (0, validateRequest_1.default)(borrow_validation_1.createBorrowValidationSchema), borrow_controller_1.BorrowController.borrowBook);
+router.get("/", borrow_controller_1.BorrowController.getBorrowedBooksSummary);
 exports.borrowRoutes = router;

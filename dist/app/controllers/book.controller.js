@@ -25,21 +25,28 @@ const createBook = (req, res, next) => __awaiter(void 0, void 0, void 0, functio
         next(error);
     }
 });
-// Get all books
+// Get all books with pagination
 const getAllBooks = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const { filter, sortBy, sort, limit } = req.query;
-        const result = yield book_service_1.BookService.getAllBooks(filter, sortBy, sort, Number(limit));
+        const { filter = "", sortBy = 'createdAt', sort = 'desc', limit = 10, page = 1 } = req.query;
+        const result = yield book_service_1.BookService.getAllBooks(filter, sortBy, sort, Number(limit), Number(page));
         res.status(200).json({
             success: true,
             message: 'Books retrieved successfully',
-            data: result,
+            meta: {
+                page: Number(page),
+                limit: Number(limit),
+                total: result.totalCount,
+                totalPages: Math.ceil(result.totalCount / Number(limit)),
+            },
+            data: result.books,
         });
     }
     catch (error) {
         next(error);
     }
 });
+exports.default = { getAllBooks };
 // Get a book by ID
 const getBookById = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {

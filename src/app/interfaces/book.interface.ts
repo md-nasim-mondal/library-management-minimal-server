@@ -20,3 +20,9 @@ export interface IBook {
   updatedAt?: Date | string;
   createdAt?: Date | string;
 }
+
+export interface IBookQueryResult {
+  books: IBook[];
+  totalCount: number;
+}
+

@@ -1,5 +1,5 @@
-import { IBook } from '../interfaces/book.interface';
-import { Book } from '../models/book.model';
+import { IBook, type IBookQueryResult } from "../interfaces/book.interface";
+import { Book } from "../models/book.model";
 
 // Create a new book
 const createBook = async (bookData: IBook) => {
@@ -7,31 +7,36 @@ const createBook = async (bookData: IBook) => {
   return result;
 };
 
-// Get all books with filtering and sorting
-const getAllBooks = async (filter: string, sortBy: string, sort: string, limit: number) => {
+// Get all books with filtering, sorting and pagination
+const getAllBooks = async (
+  filter?: string,
+  sortBy: string = "createdAt",
+  sort: string = "desc",
+  limit: number = 10,
+  page: number = 1
+): Promise<IBookQueryResult> => {
   const query: any = {};
-  
-  // Apply genre filter if provided
+
   if (filter) {
     query.genre = filter;
   }
-  
-  // Set default sort options
-  const sortOptions: any = {};
-  if (sortBy) {
-    sortOptions[sortBy] = sort === 'desc' ? -1 : 1;
-  } else {
-    sortOptions.createdAt = -1; // Default sort by createdAt desc
-  }
-  
-  // Set default limit
-  const limitValue = limit || 10;
-  
-  const result = await Book.find(query)
+
+  const sortOptions: Record<string, 1 | -1> = {};
+  sortOptions[sortBy] = sort === "desc" ? -1 : 1;
+
+  const skip = (page - 1) * limit;
+  const totalCount = await Book.countDocuments(query);
+
+  const books = await Book.find(query)
     .sort(sortOptions)
-    .limit(limitValue);
-    
-  return result;
+    .skip(skip)
+    .limit(limit)
+    .lean();
+
+  return {
+    books,
+    totalCount,
+  };
 };
 
 // Get a book by ID
@@ -42,11 +47,10 @@ const getBookById = async (id: string) => {
 
 // Update a book
 const updateBook = async (id: string, payload: Partial<IBook>) => {
-  const result = await Book.findByIdAndUpdate(
-    id,
-    payload,
-    { new: true, runValidators: true },
-  );
+  const result = await Book.findByIdAndUpdate(id, payload, {
+    new: true,
+    runValidators: true,
+  });
   return result;
 };
 

@@ -40,13 +40,7 @@ export const createBookValidationSchema = z.object({
 
     available: z.boolean().optional(),
     image: z.string().optional(),
-    publishedYear: z
-      .number({
-        message: "Copies must be a number",
-      })
-      .int("Copies must be an integer")
-      .min(0, "Copies must be a non-negative number")
-      .optional(),
+    publishedYear: z.number().optional(),
   }),
 });
 
@@ -65,13 +59,7 @@ export const updateBookValidationSchema = z.object({
       .optional(),
     available: z.boolean().optional(),
     image: z.string().optional(),
-    publishedYear: z
-      .number({
-        message: "Copies must be a number",
-      })
-      .int("Copies must be an integer")
-      .min(0, "Copies must be a non-negative number")
-      .optional(),
+    publishedYear: z.number().optional(),
   }),
 });
 

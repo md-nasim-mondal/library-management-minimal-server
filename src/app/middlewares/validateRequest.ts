@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from "express";
-import { ZodObject, ZodError } from "zod";
+import { ZodObject } from "zod";
 
 const validateRequest = (schema: ZodObject<any>) => {
   return async (req: Request, res: Response, next: NextFunction) => {

@@ -16,27 +16,25 @@ const createBook = (bookData) => __awaiter(void 0, void 0, void 0, function* () 
     const result = yield book_model_1.Book.create(bookData);
     return result;
 });
-// Get all books with filtering and sorting
-const getAllBooks = (filter, sortBy, sort, limit) => __awaiter(void 0, void 0, void 0, function* () {
+// Get all books with filtering, sorting and pagination
+const getAllBooks = (filter_1, ...args_1) => __awaiter(void 0, [filter_1, ...args_1], void 0, function* (filter, sortBy = "createdAt", sort = "desc", limit = 10, page = 1) {
     const query = {};
-    // Apply genre filter if provided
     if (filter) {
         query.genre = filter;
     }
-    // Set default sort options
     const sortOptions = {};
-    if (sortBy) {
-        sortOptions[sortBy] = sort === 'desc' ? -1 : 1;
-    }
-    else {
-        sortOptions.createdAt = -1; // Default sort by createdAt desc
-    }
-    // Set default limit
-    const limitValue = limit || 10;
-    const result = yield book_model_1.Book.find(query)
+    sortOptions[sortBy] = sort === "desc" ? -1 : 1;
+    const skip = (page - 1) * limit;
+    const totalCount = yield book_model_1.Book.countDocuments(query);
+    const books = yield book_model_1.Book.find(query)
         .sort(sortOptions)
-        .limit(limitValue);
-    return result;
+        .skip(skip)
+        .limit(limit)
+        .lean();
+    return {
+        books,
+        totalCount,
+    };
 });
 // Get a book by ID
 const getBookById = (id) => __awaiter(void 0, void 0, void 0, function* () {
@@ -45,7 +43,10 @@ const getBookById = (id) => __awaiter(void 0, void 0, void 0, function* () {
 });
 // Update a book
 const updateBook = (id, payload) => __awaiter(void 0, void 0, void 0, function* () {
-    const result = yield book_model_1.Book.findByIdAndUpdate(id, payload, { new: true, runValidators: true });
+    const result = yield book_model_1.Book.findByIdAndUpdate(id, payload, {
+        new: true,
+        runValidators: true,
+    });
     return result;
 });
 // Delete a book

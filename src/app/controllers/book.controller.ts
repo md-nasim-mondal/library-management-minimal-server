@@ -16,27 +16,43 @@ const createBook = async (req: Request, res: Response, next: NextFunction) => {
   }
 };
 
-// Get all books
+// Get all books with pagination
+
 const getAllBooks = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const { filter, sortBy, sort, limit } = req.query;
-    
+    const { 
+      filter="", 
+      sortBy = 'createdAt', 
+      sort = 'desc', 
+      limit = 10, 
+      page = 1 
+    } = req.query;
+
     const result = await BookService.getAllBooks(
       filter as string,
       sortBy as string,
       sort as string,
       Number(limit),
+      Number(page)
     );
-    
+
     res.status(200).json({
       success: true,
       message: 'Books retrieved successfully',
-      data: result,
+      meta: {
+        page: Number(page),
+        limit: Number(limit),
+        total: result.totalCount,
+        totalPages: Math.ceil(result.totalCount / Number(limit)),
+      },
+      data: result.books,
     });
   } catch (error) {
     next(error);
   }
 };
+
+export default { getAllBooks };
 
 // Get a book by ID
 const getBookById = async (req: Request, res: Response, next: NextFunction) => {
