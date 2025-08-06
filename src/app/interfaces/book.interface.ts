@@ -1,10 +1,10 @@
 export enum Genre {
-  FICTION = 'FICTION',
-  NON_FICTION = 'NON_FICTION',
-  SCIENCE = 'SCIENCE',
-  HISTORY = 'HISTORY',
-  BIOGRAPHY = 'BIOGRAPHY',
-  FANTASY = 'FANTASY',
+  FICTION = "FICTION",
+  NON_FICTION = "NON_FICTION",
+  SCIENCE = "SCIENCE",
+  HISTORY = "HISTORY",
+  BIOGRAPHY = "BIOGRAPHY",
+  FANTASY = "FANTASY",
 }
 
 export interface IBook {
@@ -15,4 +15,8 @@ export interface IBook {
   description?: string;
   copies: number;
   available: boolean;
+  image?: string;
+  publishedYear?: number | null;
+  updatedAt?: Date | string;
+  createdAt?: Date | string;
 }

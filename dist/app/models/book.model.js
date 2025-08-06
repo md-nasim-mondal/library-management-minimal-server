@@ -49,12 +49,18 @@ const bookSchema = new mongoose_1.Schema({
             validator: function (value) {
                 return Number.isInteger(value) && value >= 0;
             },
-            message: "Copies must be a non-negative integer"
-        }
+            message: "Copies must be a non-negative integer",
+        },
     },
     available: {
         type: Boolean,
         default: true,
+    },
+    image: {
+        type: String,
+    },
+    publishedYear: {
+        type: Number,
     },
 }, {
     timestamps: true,
