@@ -21,10 +21,10 @@ const borrowBook = (borrowData) => __awaiter(void 0, void 0, void 0, function* (
         // Check if book has enough copies
         const book = yield book_model_1.Book.findById(borrowData.book);
         if (!book) {
-            throw new Error('Book not found');
+            throw new Error("Book not found");
         }
         if (book.copies < borrowData.quantity) {
-            throw new Error('Not enough copies available');
+            throw new Error("Not enough copies available");
         }
         // Update book copies
         book.copies -= borrowData.quantity;
@@ -47,38 +47,51 @@ const borrowBook = (borrowData) => __awaiter(void 0, void 0, void 0, function* (
     }
 });
 // Get borrowed books summary using aggregation
-const getBorrowedBooksSummary = () => __awaiter(void 0, void 0, void 0, function* () {
-    const result = yield borrow_model_1.Borrow.aggregate([
+const getBorrowedBooksSummary = (...args_1) => __awaiter(void 0, [...args_1], void 0, function* (page = 1, limit = 10) {
+    const skip = (page - 1) * limit;
+    // Get total count first
+    // const totalCount = await Borrow.countDocuments({ returned: false });
+    const totalCount = (yield borrow_model_1.Borrow.distinct("book")).length;
+    // Get paginated summary
+    const summary = yield borrow_model_1.Borrow.aggregate([
+        // {
+        //   $match: { returned: false } // Only count active borrows
+        // },
         {
             $group: {
-                _id: '$book',
-                totalQuantity: { $sum: '$quantity' },
+                _id: "$book",
+                totalQuantity: { $sum: "$quantity" },
             },
         },
         {
             $lookup: {
-                from: 'books',
-                localField: '_id',
-                foreignField: '_id',
-                as: 'bookDetails',
+                from: "books",
+                localField: "_id",
+                foreignField: "_id",
+                as: "bookDetails",
             },
         },
         {
-            $unwind: '$bookDetails',
+            $unwind: "$bookDetails",
         },
         {
             $project: {
                 _id: 0,
                 book: {
-                    bookId: '$bookDetails._id',
-                    title: '$bookDetails.title',
-                    isbn: '$bookDetails.isbn',
+                    bookId: "$bookDetails._id",
+                    title: "$bookDetails.title",
+                    isbn: "$bookDetails.isbn",
                 },
                 totalQuantity: 1,
             },
         },
+        { $skip: skip },
+        { $limit: limit },
     ]);
-    return result;
+    return {
+        summary,
+        totalCount,
+    };
 });
 exports.BorrowService = {
     borrowBook,

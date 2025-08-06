@@ -19,12 +19,23 @@ const borrowBook = async (req: Request, res: Response, next: NextFunction) => {
 // Get borrowed books summary
 const getBorrowedBooksSummary = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const result = await BorrowService.getBorrowedBooksSummary();
+    const { page = 1, limit = 10 } = req.query;
+    
+    const result = await BorrowService.getBorrowedBooksSummary(
+      Number(page),
+      Number(limit)
+    );
     
     res.status(200).json({
       success: true,
       message: 'Borrowed books summary retrieved successfully',
-      data: result,
+      meta: {
+        page: Number(page),
+        limit: Number(limit),
+        total: result.totalCount,
+        totalPages: Math.ceil(result.totalCount / Number(limit)),
+      },
+      data: result.summary,
     });
   } catch (error) {
     next(error);

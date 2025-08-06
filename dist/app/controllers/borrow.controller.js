@@ -28,11 +28,18 @@ const borrowBook = (req, res, next) => __awaiter(void 0, void 0, void 0, functio
 // Get borrowed books summary
 const getBorrowedBooksSummary = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const result = yield borrow_service_1.BorrowService.getBorrowedBooksSummary();
+        const { page = 1, limit = 10 } = req.query;
+        const result = yield borrow_service_1.BorrowService.getBorrowedBooksSummary(Number(page), Number(limit));
         res.status(200).json({
             success: true,
             message: 'Borrowed books summary retrieved successfully',
-            data: result,
+            meta: {
+                page: Number(page),
+                limit: Number(limit),
+                total: result.totalCount,
+                totalPages: Math.ceil(result.totalCount / Number(limit)),
+            },
+            data: result.summary,
         });
     }
     catch (error) {
