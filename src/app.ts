@@ -7,7 +7,14 @@ const app: Application = express();
 
 // Middlewares
 app.use(express.json());
-app.use(cors());
+app.use(
+  cors({
+    origin: [
+      "http://localhost:5173",
+      "https://library-management-minimal-web.vercel.app",
+    ],
+  })
+);
 
 app.use("/api", router);
 
@@ -19,7 +26,6 @@ app.get("/", (req: Request, res: Response) => {
   });
 });
 
-
 // Global error handling middleware
 app.use(globalErrorHandler);
 
@@ -27,7 +33,7 @@ app.use(globalErrorHandler);
 app.use((req: Request, res: Response) => {
   res.status(404).json({
     success: false,
-    message: 'Route not found',
+    message: "Route not found",
   });
 });
 
