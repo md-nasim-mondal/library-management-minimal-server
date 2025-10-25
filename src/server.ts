@@ -5,7 +5,7 @@ import config from "./app/config";
 async function startServer() {
   try {
     await mongoose.connect(config.database_url as string, {
-        dbName: 'library-management',
+      dbName: "library-management",
     });
     console.log("🔋 Database connection established");
 

@@ -25,4 +25,3 @@ export interface IBookQueryResult {
   books: IBook[];
   totalCount: number;
 }
-
